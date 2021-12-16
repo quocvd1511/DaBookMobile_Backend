@@ -1,0 +1,136 @@
+/*sale container */
+.sale {
+  background-color: #efefef;
+}
+
+.sale__myvoucher {
+  padding-top: 16px;
+}
+
+.sale__list {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.sale__myvoucher, .sale__list {
+  background-color: var(--white-color);
+}
+
+.sale__list-container {
+  padding: 12px;
+  opacity: 0.7;
+}
+
+.sale__list-item {
+  box-sizing: border-box;
+}
+
+.sale__list-text {
+  padding: 12px 12px;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: black;
+}
+
+.sale__list-container:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+/* voucher */
+.sale__voucher-title {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.list-card{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+}
+
+.sale__card {
+  display: flex;
+  max-height: 100px;
+  border: 1px solid #d8d8d8;
+  border-radius: 3px;
+  margin: 20px 20px 0 20px;
+  box-sizing: border-box;
+}
+
+.sale-img{
+  flex: 0;
+  z-index: 0;
+}
+
+.sale__voucher-logo {
+  width: 100px;
+  padding: 8px;
+  background-color: var(--blue-color);
+  border-radius: 2px;
+  margin-top: -1;
+  margin-left: -1;
+}
+
+.sale__card-content{
+  align-items: center;
+  display: flex;
+}
+
+.card-container{
+  margin-left: 10px;
+  width: 200px;
+}
+
+.sale__card-text {
+  font-size: 1.4rem;
+  font-weight: 400;
+  flex: 1;
+}
+
+.card-button{
+  width: 150px;
+}
+
+.btn__save {
+  float: right;
+  width: 70px;
+  height: 35px;
+  border: none;
+  border-radius: 3px;
+  font-size: 1.5rem;
+  padding: 0 10px;
+  margin-right: 20px;
+  font-weight: 500;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn__save--primary{
+  color: var(--white-color);
+  background-color: var(--blue-color);
+}
+
+.btn__save--primary:hover {
+  opacity: 0.7;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--white-color);
+}
+
+.btn__save--disable{
+  cursor: not-allowed;
+  opacity: 0.5;
+  color: var(--black-color);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn__save--disable:hover{
+  text-decoration: none;
+  color: var(--black-color);
+} 
+  

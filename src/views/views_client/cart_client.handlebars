@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/client_styles/assets/css/cart.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    
+</head>
+
+<body>
+    {{!-- <form> --}}
+    <div class="cart__container grid">
+            <h1>Giỏ hàng</h1>
+            <form action="/payment" method="GET">
+            <div class="cart transition is-open">
+            
+                <div class="table">
+                
+                    <div class="layout-inline row th">
+                        <div class="col-auto ">Chọn</div>
+                        <div class="col-4 col-pro">Sản phẩm</div>
+                        <div class="col col-price align-center "> 
+                            Đơn giá
+                        </div>
+                        <div class="col-auto col-qty align-center">Số lượng</div>
+                        
+                        <div class="col">Thành tiền</div>
+                        <div class="col-auto col__bin"><i class="far fa-trash-alt"></i></div>
+                    </div>
+                   
+                    {{#each client_accounts.giohang}}
+                    {{#chanle @index}}
+                        <div class="layout-inline row">
+                            <div class="col-auto col__checkbox"><input id="input_loai" class="checkbox" name="loai" type="checkbox" value="Web"/></div>
+                            <div class="col-4 col-pro layout-inline">
+                                <img class="cart__img" name="ds_hinhanh[]" value="{{this.hinhanh}}" src="{{this.hinhanh}}"alt="">
+                                <p class="item__name" name="ds_tensach[]" value="{{this.tensach}}">{{this.tensach}}</p>
+                            </div>
+                            <div class="col col-price col-numeric align-center" id="giaban">
+                                    <span class="col-price" name="ds_giaban[]" id="id_giaban" value="{{this.giaban}}">{{this.giaban}}000 </span>
+                            </div>
+                        
+                            <div class="col-auto col-qty layout-inline">
+                                <a href="#" class="qty qty-minus"><span>-</span></a>
+                                <input class="input__qty" name="ds_soluong[]" id="id_soluong" type="numeric" value="{{this.soluong}}" />
+                                <a href="#" class="qty qty-plus"><span>+</span></a>
+                            </div>
+                                
+                            <div class="col col-vat col-numeric" id="thanhtien">
+                                <p class="price__item" name="ds_thanhtien[]" id="id_thanhtien" value="{{tinhtien this.giaban '*' this.soluong}}.000">{{tinhtien this.giaban '*' this.soluong}}.000 đ</p>
+                            </div>
+                                    
+                            <div class="col-auto col__bin">               
+                                <i class="far fa-trash-alt"></i>
+                            </div>
+                        </div>
+                    {{else}}
+                        <div class="layout-inline row row-bg2">
+                            <div class="col-auto col__checkbox"><input id="input_loai" class="checkbox" name="loai" type="checkbox" value="Web"/></div>
+                            <div class="col-4 col-pro layout-inline">
+                                <img class="cart__img" name="ds_hinhanh[]" value="{{this.hinhanh}}" src="{{this.hinhanh}}"alt="">
+                                <p class="item__name" name="ds_tensach[]" value="{{this.tensach}}">{{this.tensach}}</p>
+                            </div>
+
+                            <div class="col col-price col-numeric align-center" id="giaban">
+                                    <span class="col-price" name="ds_giaban[]" id="id_giaban" value="{{this.giaban}}">{{this.giaban}}000 </span>
+                            </div>
+                        
+                            <div class="col-auto col-qty layout-inline">
+                                <a href="#" class="qty qty-minus"><span>-</span></a>
+                                <input class="input__qty" name="ds_soluong[]" id="id_soluong" type="numeric" value="{{this.soluong}}" />
+                                <a href="#" class="qty qty-plus"><span>+</span></a>
+                            </div>
+                                
+                            <div class="col col-vat col-numeric" id="thanhtien">
+                                <p class="price__item" name="ds_thanhtien[]" id="id_thanhtien" value="{{tinhtien this.giaban '*' this.soluong}}.000">{{tinhtien this.giaban '*' this.soluong}}.000 đ</p>
+                            </div>
+                                    
+                            <div class="col-auto col__bin">               
+                                <i class="far fa-trash-alt"></i>
+                            </div>
+                        </div>
+                    {{/chanle}}
+                {{/each}}
+                    <div class="tf">
+                    </div>         
+                </div>
+            
+                <div class="col-3 border" style="padding-top:80px;">
+                    <div class="cart-store">
+                        <img class="cart-logo-img" src="/client_styles/assets/img/logo.png" alt="">
+                        <span class="cart-label">DaBook Store</span>
+                    </div>
+                    <div class="cart-detail">
+                        <div class="user__cart-delivery">
+                            <div name="matk" value="{{client_accounts.matk}}">
+                                <span style="font-weight: 400;">Giao hàng đến: </span>
+                                <span style="font-weight: 400;" >{{client_accounts.matk}}</span>
+                            </div>
+                            <div name="sdt" value="{{client_accounts.sodt}}">
+                                <span style="font-weight: 400;">Số điện thoại: 0{{client_accounts.sodt}}</span>
+                            </div>
+                            <div class="cart_address">
+                                <span style="font-weight: 400;">Địa chỉ: {{client_accounts.diachigh}} </span>
+                            </div>
+                            <a href="" style="text-decoration: none; justify-content: space-around;">Thay đổi</a>
+                        </div>
+                        <div class="cart-delivery" style="padding: 5px 0 4px;"> 
+                            <p style="font-weight: 400; font-size: 1.8rem; color: #666;">Thông tin đơn hàng</p>
+                        </div>
+                        <div class="cart-delivery" style="padding: 2px 0;">
+                            <span style="color: #666;">Tạm tính </span>
+                            <span style="color: #666;" id="id_soluong_sanpham">(0) sản phẩm </span>
+                        </div>
+                        <div class="cart-delivery" style="padding: 6px 0 14px;">
+                            <span style="color: #666;">Phí giao hàng</span>
+                            <span class="totals-value" id="cart-shipping" style="color: #666;">40000 </span>
+                        </div>
+                        <ul class="list-cart">
+                            {{!-- <li class="list-cart-item" style="display: none;">
+                                <i class="fas fa-city"></i>
+                                Nội thành: TP HCM
+                                <div class="cart-prices">
+                                    <div class="cart-price">
+                                        <span>20.000 đ</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-cart-item">
+                                <i class="fas fa-map-marked-alt"></i>
+                                Ngoại thành
+                                <div class="cart-prices">
+                                    <div class="cart-price">
+                                        <span>40.000 đ</span>
+                                    </div>
+                                </div>
+                            </li> --}}
+                            
+                            <li class="list-cart-item">
+                                <form method="get" action="/nhapkhuyenmai" class="input__sale">
+                                    <input class="form__code-sale" id="input__code-sale" type="text" placeholder="Nhập mã khuyến mãi" name="makm" value="{{makhuyenmai.makm}}">
+                                    <button type="submit" class="btn__apply" id="apply" >Áp dụng</button>
+                                </form>
+                                <div class="cart__sale" name="tiengiam" value="{{tinhtien 100 '%' makhuyenmai.phantram }}">
+                                    <span>Giảm giá:</span>
+                                    {{#if makhuyenmai}}
+                                    <span> {{tinhtien 100 '%' makhuyenmai.phantram }}.000 đ</span>
+                                    {{else}}
+                                    <span> 0đ</span>
+                                    {{/if}}
+                                </div>
+                                <div class="cart__total" name="tongtien">
+                                    <span>Tổng tiền:</span>
+                                    {{!-- {{#each client_accounts.giohang}} --}}
+                                    <span id="tongtien"></span>
+                                    {{!-- {{/each}} --}}
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div> 
+                     {{!-- <a type="button" class="btn__buy-book" id="buy" >Xác nhận đặt sách</a> --}}
+                    <button class="btn__buy-book" id="buy" type="submit">Xác nhận đặt sách</button>
+            </div>
+            </form>
+    </div>
+    <script>
+        //---------------------------------
+
+        var list_thanhtien = document.querySelectorAll('#id_thanhtien')
+        var TongTien=0
+        for(var i=0;i<list_thanhtien.length;i++)
+        {
+            var value=list_thanhtien[i].innerHTML;
+            value=value.substr(0,value.length-6)
+            TongTien+=parseInt(value)
+            $('#tongtien').text(TongTien.toString()+".000 đ")
+        }
+
+        var list_soluong = document.querySelectorAll('#id_soluong')
+        var TongSoLuong=0;
+        for(var i=0;i<list_soluong.length;i++)
+        {
+            var value=list_soluong[i].value
+            TongSoLuong+=parseInt(value)
+            $('#id_soluong_sanpham').text('('+TongSoLuong.toString()+') Sản phẩm')
+        }
+        
+        //--------------------------------------------------
+
+        $('.visibility-cart').on('click',function(){
+       
+       var $btn =  $(this);
+       var $cart = $('.cart');
+       console.log($btn);
+       
+       if ($btn.hasClass('is-open')) {
+          $btn.removeClass('is-open');
+          $btn.text('O')
+          $cart.removeClass('is-open');     
+          $cart.addClass('is-closed');
+          $btn.addClass('is-closed');
+       } else {
+          $btn.addClass('is-open');
+          $btn.text('X')
+          $cart.addClass('is-open');     
+          $cart.removeClass('is-closed');
+          $btn.removeClass('is-closed');
+       }
+     
+                       
+     });
+     
+       // SHOPPING CART PLUS OR MINUS
+       $('a.qty-minus').on('click', function(e) {
+         e.preventDefault();
+         //console.log('a.col-price')
+         var $this = $(this);
+         var $input = $this.closest('div').find('input');
+         var gia_ban=$this.parent().parent().parent().find("#giaban").find(".col-price")
+         var thanh_tien=$this.parent().parent().parent().find("#thanhtien").find(".price__item")
+         var value = parseInt($input.val());
+         //$('.input__qty').value=6
+         if (value > 0) {
+           value = value - 1;
+           var sum=value*(parseInt(gia_ban.text())/1000)
+            TongTien-=(parseInt(gia_ban.text())/1000)
+            var temp=sum.toString()+".000đ"
+            thanh_tien.text(temp)
+            $('#tongtien').text(TongTien.toString()+".000 đ")
+            $input.val(value); 
+
+            TongSoLuong-=1;
+            $('#id_soluong_sanpham').text('('+TongSoLuong.toString()+') Sản phẩm')
+         }   
+       });
+
+       
+       $('a.qty-plus').on('click', function(e) {
+         e.preventDefault();
+         var $this = $(this);
+         var $input = $this.closest('div').find('input')
+         var gia_ban=$this.parent().parent().parent().find("#giaban").find(".col-price")
+         var thanh_tien=$this.parent().parent().parent().find("#thanhtien").find(".price__item")
+         var value = parseInt($input.val());
+         if (value < 100) {
+            value = value + 1;
+            var sum=value*(parseInt(gia_ban.text())/1000)
+            TongTien+=(parseInt(gia_ban.text())/1000)
+            var temp=sum.toString()+".000đ"
+            thanh_tien.text(temp)
+            $('#tongtien').text(TongTien.toString()+".000 đ")
+            $input.val(value);
+
+            TongSoLuong+=1
+            $('#id_soluong_sanpham').text('('+TongSoLuong.toString()+') Sản phẩm')
+         }
+
+
+         //var tong_gia=$this.parent().parent().parent().parent().parent().find('.list-cart-item').find('.cart__total').find('#tongtien').html()
+         //console.log(tong_gia)
+
+
+       });
+
+
+        $("#id_soluong").change(function()
+        {
+            console.log("Change")
+        })
+
+     
+     // RESTRICT INPUTS TO NUMBERS ONLY WITH A MIN OF 0 AND A MAX 100
+     {{!-- $('input').on('blur', function(){
+     
+       var input = $(this);
+       var value = parseInt($(this).val());
+     
+         if (value <= 0 || isNaN(value)) {
+           input.val(0);
+         } else if
+           (value > 100) {
+           input.val(100);
+         }
+     }); --}}
+
+     function totalIt()
+    {
+        var input = document.getElementsByClassName(".cart__total");
+        var total = 0;
+        for (var i = 0; i < input.length; i++)
+        {
+                total += parseFloat(input[i].value);
+        }
+        document.getElementsByClassName(".cart__total").value = total.toFixed(2) + " đ";
+    }
+    </script>
+
+    <script>
+        window.onload = function()
+        {
+            var list = document.querySelectorAll('.row'); 
+
+            for(var i=0; i<list.length;i++) 
+            {
+                console.log("ngoài" + list[i])
+            }
+
+            var a = document.querySelectorAll('.col-price');
+
+            console.log(a);
+            for (var j = 0; j < a.length; j++ ){
+                console.log("trong" + a[j]);
+            }
+
+            $('.qty-plus').on('click', function(){
+                $(".qty-plus").selectedIndex;
+                console.log("hehehe " + $('.qty-plus').selectedIndex);
+            })
+
+            var shippingRate = 40000; 
+            var fadeTime = 300;
+
+            /* Assign actions */
+            $('.col-qty input').change( function() {
+            updateQuantity(this);
+            });
+
+            console.log("His");
+            recalculateCart();
+            updateQuantity(quantityInput);
+        }
+
+            function recalculateCart()
+            {
+            var subtotal = 0;
+            
+            /* Sum up row totals */
+            $('.layout-inline').each(function () {
+                subtotal += parseInt($(this).children('.col-vat').text());
+                console.log(this);
+                console.log(subtotal);
+            });
+
+            /* Calculate totals */
+            var sale = 0;  // Để tạm
+            var shipping = (subtotal > 0 ? shippingRate : 0);
+            var total = subtotal - sale + shipping;
+            console.log(total);
+            
+            /* Update totals display */
+            $('.totals-value').fadeOut(fadeTime, function() {
+                $('#cart-subtotal').html(subtotal.toFixed(2));
+                $('#cart-sale').html(sale.toFixed(2));
+                $('#cart-shipping').html(shipping.toFixed(2));
+                $('#cart-total').html(total.toFixed(2));
+                console.log(total);
+                if(total == 0){
+                $('.btn__buy-book').fadeOut(fadeTime);
+                }else{
+                $('.btn__buy-book').fadeIn(fadeTime);
+                }
+                $('.totals-value').fadeIn(fadeTime);
+            });
+            }
+
+            function updateQuantity(quantityInput)
+            {
+            /* Calculate line price */
+            var productRow = $(quantityInput).parent().parent();
+            console.log(productRow);
+            var price = parseFloat(productRow.children('.col-price').text());
+            var quantity = $(quantityInput).val();
+            var linePrice = price * quantity;
+            
+            /* Update line price display and recalc cart totals */
+            productRow.children('.col-vat').each(function () {
+                $(this).fadeOut(fadeTime, function() {
+                $(this).text(linePrice.toFixed(2));
+                recalculateCart();
+                $(this).fadeIn(fadeTime);
+                });
+            });  
+        
+        }
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous">
+      </script>
+      <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+      integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+      crossorigin="anonymous">
+      </script>
+</body>
+</html>
