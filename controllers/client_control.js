@@ -201,7 +201,7 @@ class Client_Control
                     { 'tacgia' :  {'$regex' : req.params.name , '$options' : 'i'}}
             ]})
             .then(books => 
-                { 
+                {
                     books=books.map(course => course.toObject())
                     console.log(books);
                     res.send(books);
@@ -611,7 +611,7 @@ class Client_Control
                     .then(list_book => 
                     {
                         list_book=list_book.map(course => course.toObject())
-                        res.send(book, list_book, dateString, thongtintk);
+                        res.json(200, book, list_book, dateString, thongtintk);
                     })
                     .catch(next)   }))     
                      }else{
@@ -619,12 +619,15 @@ class Client_Control
                     .then(list_book => 
                     {
                         list_book=list_book.map(course => course.toObject())
-                        res.send(book, list_book);
+                        res.send(200, {book, list_book});
                     })
                     .catch(next)   
                      }          
                     }
                 } else {
+                    res.locals.error = err;
+                    const err = new Error('Not Found');
+                    err.status = 404;
                     next(err)
                 }
             })
