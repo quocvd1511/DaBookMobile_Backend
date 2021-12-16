@@ -121,13 +121,13 @@ class Client_Control
                 if(!err)
                 {
                     if(Boolean(client_account)==false) {
-                        res.redirect('/')
+                        res.send({status: 'Failed'})
                     }
                     else 
                     {    
                         req.session.username=client_account.matk;
                         req.session.isAuth=true;
-                        res.redirect('/')                 
+                        res.send({status: 'Success', user_session: req.session})            
                     }
                 } else {
                     next(err)
