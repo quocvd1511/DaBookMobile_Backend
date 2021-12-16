@@ -8,7 +8,6 @@ const giohang = require('../models/giohang')
 const donhang = require('../models/donhang')
 
 
-
 class Client_Control
 {
     main(req,res,next)
@@ -35,11 +34,11 @@ class Client_Control
     
                                 books=books.map(course => course.toObject())
     
-                                res.render('home_client.handlebars',{layout:'client.handlebars',client_accounts: req.session.username, flash_sales: flash_sales, books: books});     
+                                res.send(200, {flash_sales, books});     
     
                             })
     
-                        .catch(next)            
+                        .catch(next)
     
                     } else {
     
@@ -67,16 +66,18 @@ class Client_Control
     
                             {
     
-                                books=books.map(course => course.toObject())
+                                books=books.map(course => course.toObject())
     
-                                res.send(books)    
+                                res.send(200, {books, flash_sales})    
     
                             })
     
                         .catch(next)            
     
                     } else {
-    
+                     res.locals.error = err;
+                     const err = new Error('Not Found');
+                     err.status = 404;
                         next(err)
     
                     }
@@ -222,7 +223,7 @@ class Client_Control
                     .then(books => 
                         {
                             books=books.map(course => course.toObject())
-                            res.render('search_client.handlebars',{layout:'client.handlebars',books: books, CurrentPage: 1, client_accounts: thongtintk});
+                            res.send(200, {books,thongtintk});
                         })
                     .catch(next)}))     
              }else{
@@ -232,7 +233,7 @@ class Client_Control
                 .then(books => 
                     {
                         books=books.map(course => course.toObject())
-                        res.render('search_client.handlebars',{layout:'client.handlebars',books: books, CurrentPage: 1});
+                        res.status(200).send({books, });
                     })
                 .catch(next)
              }
@@ -632,7 +633,6 @@ class Client_Control
                 }
             })
     }
-
     //phân trang cũ
     get_pagination(req, res, next){
     var perPage = 30; // số lượng sản phẩm xuất hiện trên 1 page
