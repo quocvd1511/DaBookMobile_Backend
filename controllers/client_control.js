@@ -795,7 +795,7 @@ class Client_Control
                         thongtintk=mongooseToObject(thongtintk);
                         giohang.findOne({'matk': req.session.username}).then(gh =>{
                             gh=mongooseToObject(gh);
-                            res.render('cart_client.handlebars',{layout: 'client.handlebars', client_accounts: thongtintk, giohang: gh})         
+                            res.send(200, {thongtintk, gh})         
                         })
                     })
                     .catch(next)
