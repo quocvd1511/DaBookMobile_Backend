@@ -91,18 +91,35 @@ class Client_Control
       
     // POST signup
     signup(req, res, next){
-        const formData = req.body;
-        formData.diem = 0;
-        formData.tinhtrang = "Đang sử dụng";
-        formData.diachigoc = "";
-        formData.gioitinh = "";
-        formData.sodt = "";
-        formData.sl_giohang = 0;
+        console.log(req.body)
+        client_account.findOne({matk: req.body.username})
+            .then(client_accounts =>
+                {
+                console.log(client_accounts)
+                if(Boolean(client_accounts) === true)
+                {
+                    res.send({status: 'Existed'})
+                }
+                else
+                {
+                    console.log('Lưu thoi')
+                    var formData ={
+                        matk: req.body.username,
+                        sodt: req.body.phonenumber,
+                        matkhau: req.body.password,
+                        tinhtrang: "Đang sử dụng"}
+                    const Client_account = new client_account(formData);
+                    Client_account.save(formData)
+                    .then(() => res.send({status: 'Success', user_session: {username: req.body.username}}))
+                    .catch(error => {});
+                }
+            })
+        
 
-        const Client_account = new client_account(formData);
-        Client_account.save()
-            .then(() => res.redirect('/'))
-            .catch(error => {});
+        // const Client_account = new client_account(formData);
+        // Client_account.save()
+        //     .then(() => res.redirect('/'))
+        //     .catch(error => {});
         
     }
 
