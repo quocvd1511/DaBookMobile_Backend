@@ -26,11 +26,7 @@ class Client_Control
     
                         flash_sales=flash_sales.map(course => course.toObject())
     
-<<<<<<< HEAD
-                       books.find({}).limit(50)
-=======
                        books.find({}).limit(50).skip(50*1)
->>>>>>> 79f7ca19a1df45ee2ffe679a874ad2aaac0bb102
     
                         .then(books => 
     
@@ -633,11 +629,7 @@ class Client_Control
                     .then(list_book => 
                     {
                         list_book=list_book.map(course => course.toObject())
-<<<<<<< HEAD
-                        res.send(200, book, list_book, dateString, thongtintk);
-=======
                         res.send(200, {book, list_book});
->>>>>>> 79f7ca19a1df45ee2ffe679a874ad2aaac0bb102
                     })
                     .catch(next)
                    }))     
@@ -898,6 +890,7 @@ class Client_Control
     listvoucher(req,res,next)
     {
         console.log(req.query)
+        console.log('hello')
         client_account.findOne({matk: req.query.matk})
             .then(client_account => {
                 console.log(client_account)
