@@ -26,7 +26,11 @@ class Client_Control
     
                         flash_sales=flash_sales.map(course => course.toObject())
     
+<<<<<<< HEAD
                        books.find({}).limit(50)
+=======
+                       books.find({}).limit(50).skip(50*1)
+>>>>>>> 79f7ca19a1df45ee2ffe679a874ad2aaac0bb102
     
                         .then(books => 
     
@@ -250,7 +254,7 @@ class Client_Control
                 .then(books => 
                     {
                         books=books.map(course => course.toObject())
-                        res.status(200).send({books, });
+                        res.status(200).send({books});
                     })
                 .catch(next)
              }
@@ -629,9 +633,14 @@ class Client_Control
                     .then(list_book => 
                     {
                         list_book=list_book.map(course => course.toObject())
+<<<<<<< HEAD
                         res.send(200, book, list_book, dateString, thongtintk);
+=======
+                        res.send(200, {book, list_book});
+>>>>>>> 79f7ca19a1df45ee2ffe679a874ad2aaac0bb102
                     })
-                    .catch(next)   }))     
+                    .catch(next)
+                   }))     
                      }else{
                         books.find({theloai: book.theloai}).limit(10).skip(10*1)
                     .then(list_book => 
@@ -768,51 +777,68 @@ class Client_Control
 
     // thêm vào giỏ hàng
     themgiohang(req,res,next){
-        client_account.updateOne({"matk": req.session.username},
-            { $push: { "giohang": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}}, 
+        client_account.updateOne({"matk": req.params.username},
+            { $push: { "giohang": {"tensach": req.params.tensach, "giaban": req.params.giaban, "hinhanh": req.params.hinhanh, "soluong": req.params.soluong}}, 
             $inc: {"sl_giohang": +1}
         })
         .then(() => 
         {
-        const tongtien = req.query.giaban * req.query.soluong;
+            res.send(200, 'OK');
+        // const tongtien = req.query.giaban * req.query.soluong;
 
-        giohang.find({"matk": req.session.username}).exec(function(err, docs) {
-            if (docs.length){
-                giohang.updateOne({"matk": req.session.username},
-                { $push: { "ds_sach": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}}, 
-                $inc: {"sl_sach": +1, "tongtien": + tongtien}
-                })
-                .then(() => 
-                {
-                    res.redirect('/chitietsach/' + req.query.tensach);
-                }).catch(next)
-            } else {
-                const newgiohang = new giohang({
-                    matk: req.session.username,
-                    sl_sach: 1,
-                    tongtien: tongtien,
-                    $push: {"ds_sach": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}},
-                    diachigh: req.query.diachigh,
-                });
+        // giohang.find({"matk": req.session.username}).exec(function(err, docs) {
+        //     if (docs.length){
+        //         giohang.updateOne({"matk": req.session.username},
+        //         { $push: { "ds_sach": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}}, 
+        //         $inc: {"sl_sach": +1, "tongtien": + tongtien}
+        //         })
+        //         .then(() => 
+        //         {
+        //             res.redirect('/chitietsach/' + req.query.tensach);
+        //         }).catch(next)
+        //     } else {
+        //         const newgiohang = new giohang({
+        //             matk: req.session.username,
+        //             sl_sach: 1,
+        //             tongtien: tongtien,
+        //             $push: {"ds_sach": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}},
+        //             diachigh: req.query.diachigh,
+        //         });
                 
-                newgiohang.save(function (err, gh) {
-                    if (err) return console.error(err);
-                    res.redirect('/chitietsach/' + req.query.tensach)
-                  });
-              }
-            });
-        });
+        //         newgiohang.save(function (err, gh) {
+        //             if (err) return console.error(err);
+        //             res.redirect('/chitietsach/' + req.query.tensach)
+        //           });
+        //       }
+        //     });
+        }) .catch(next);
+    }
+
+    //Xóa khỏi giỏ hàng
+
+    xoasanpham(req,res,next){
+        client_account.updateOne({"matk": req.params.username},
+        { $pull: { "giohang": {
+           "tensach": req.params.tensach
+        }}, 
+            $inc: {"sl_giohang": -1}
+        })
+        .then(() => 
+        {
+            res.send(200, 'OK')
+        })
+        .catch(next)
     }
 
     //xem chi tiết giỏ hàng
     chitietgiohang(req,res,next){
-                client_login.findOne({'matk': req.session.username})
+                client_login.findOne({'matk': req.params.username})
                 .then(thongtintk => 
                     {
                         thongtintk=mongooseToObject(thongtintk);
-                        giohang.findOne({'matk': req.session.username}).then(gh =>{
+                        giohang.findOne({'matk': req.params.username}).then(gh =>{
                             gh=mongooseToObject(gh);
-                            res.render('cart_client.handlebars',{layout: 'client.handlebars', client_accounts: thongtintk, giohang: gh})         
+                            res.send(200, {thongtintk, gh})         
                         })
                     })
                     .catch(next)
@@ -840,10 +866,8 @@ class Client_Control
                         })
                         .catch(next)       
                     })
-                    .catch(next)
-                                    
+                    .catch(next)               
                 })  
-                 
             })
             .catch(next)
         
