@@ -5,7 +5,7 @@ const client_account = new Schema({
     matk: String,
     email: String,
     matkhau: String,
-    ngaytao: {type: Date, default: Date.now},
+    ngaytao: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()},
     diem: Number,
     tinhtrang: String,
     danhsach_km: {

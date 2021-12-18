@@ -13,6 +13,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user)
 })
+
 passport.use(
   new FacebookStrategy(
     {
@@ -25,8 +26,10 @@ passport.use(
     }
   )
 )
+
 route.get("/facebook", passport.authenticate("facebook"))
-route.get("/facebook/callback",
-passport.authenticate("facebook", { failureRedirect: "/" }),client_Control.auth_facebook_callback)
+route.get("/facebook/callback",passport.authenticate("facebook", { failureRedirect: "/" }),client_Control.auth_facebook_callback)
 
 module.exports = route
+
+

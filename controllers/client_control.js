@@ -26,7 +26,7 @@ class Client_Control
     
                         flash_sales=flash_sales.map(course => course.toObject())
     
-                       books.find({})
+                       books.find({}).limit(50)
     
                         .then(books => 
     
@@ -629,7 +629,7 @@ class Client_Control
                     .then(list_book => 
                     {
                         list_book=list_book.map(course => course.toObject())
-                        res.json(200, book, list_book, dateString, thongtintk);
+                        res.send(200, book, list_book, dateString, thongtintk);
                     })
                     .catch(next)   }))     
                      }else{
@@ -855,9 +855,41 @@ class Client_Control
         .then(thongtintk => 
             {
                 thongtintk=mongooseToObject(thongtintk);
-                res.render('payment.handlebars',{layout: 'client.handlebars', client_accounts: thongtintk})            })
+                res.render('payment.handlebars',{layout: 'client.handlebars', client_accounts: thongtintk})})
             .catch(next)
-        
+    }
+
+    //list don hang
+
+    listdonhang(req,res,next)
+    {
+        console.log(req.query)
+        donhang.find({matk:req.query.matk, tinhtrangdonhang: req.query.tinhtrang})
+            .then(donhang =>{
+                //console.log(donhang)
+                res.send(donhang)
+            })
+    }
+
+    listvoucher(req,res,next)
+    {
+        console.log(req.query)
+        client_account.findOne({matk: req.query.matk})
+            .then(client_account => {
+                console.log(client_account)
+                //console.log(listcode)
+                khuyenmai.find({makm: {$in: client_account.danhsach_km }})
+                    .then(khuyenmai => 
+                    {
+                        console.log(khuyenmai)
+                        res.send(khuyenmai)
+                    })
+            })
+    }
+
+    chitietdonhang(req,res,next)
+    {
+        console.log(req.query)
     }
 }
 

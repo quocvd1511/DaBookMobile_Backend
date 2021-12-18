@@ -1,5 +1,6 @@
 const express= require('express')
 const route =  express.Router()
+
 const session = require('express-session')
 const passport = require("passport")
 
@@ -15,8 +16,10 @@ function router(app)
         resave: false,
         saveUninitialized: false,
     }))
+
     app.use(passport.initialize())
     app.use(passport.session())    
+
     app.use('/auth',faceRoute)
     app.use('/admin',adminRouter)
     app.use('/delivery',deliveryRoute)
