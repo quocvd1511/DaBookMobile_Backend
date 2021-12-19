@@ -106,8 +106,16 @@ class Client_Control
                     var formData ={
                         matk: req.body.username,
                         sodt: req.body.phonenumber,
+                        hoten: req.body.name,
                         matkhau: req.body.password,
-                        tinhtrang: "Đang sử dụng"}
+                        email: 'Chưa cập nhật',
+                        tinhtrang: "Đang sử dụng",
+                        diem: 0,
+                        danhsach_km:[],
+                        diachigoc: 'Chưa cập nhật',
+                        gioitinh: 'Chưa cập nhật',
+                        giohang: [],
+                        }
                     const Client_account = new client_account(formData);
                     Client_account.save(formData)
                     .then(() => res.send({status: 'Success', user_session: {username: req.body.username}}))
@@ -749,22 +757,87 @@ class Client_Control
     //         })
     //     .catch(next)
     // }
-    chitiettk(req,res,next){
-
-        client_login.findOne({'matk': req.session.username})
-
+    chitiettk(req,res,next)
+    {
+        console.log(req.query)
+        client_login.findOne({'matk': req.query.matk})
         .then(thongtintk =>
 
             {
-
-                thongtintk=mongooseToObject(thongtintk);
-
-                res.render('taikhoan.handlebars',{layout: 'client.handlebars', client_accounts: thongtintk, thongtin: thongtintk})
+                console.log(thongtintk)
+                //thongtintk=thongtintk.map(course => course.toObject())
+                res.send(thongtintk)
 
             })
 
         .catch(next)
 
+    }
+
+    TaoDonHang(req,res,next)
+    {
+        //console.log('Hello')
+        //console.log(req.body)
+        var ThanhToan = ''
+        var TinhTrangThanhToan =''
+        if(req.body.value==='first')
+        {
+            ThanhToan = "Trực tiếp"
+            TinhTrangThanhToan = "Chưa thanh toán"
+        } 
+        else
+        {
+            ThanhToan = "Trực tuyến"
+            TinhTrangThanhToan = "Đã thanh toán"
+        }
+        var FormData={
+            ds_sach: req.body.listbuyed,
+            matk: req.body.matk,
+            hinhthucthanhtoan: ThanhToan,
+            tinhtrangthanhtoan: TinhTrangThanhToan,
+            tinhtrangdonhang: 'chờ xác nhận',
+            tongtien: req.body.tongtien
+        }
+
+        FormData = new donhang(FormData)
+        donhang.find({})
+            .then(donhang_x =>{
+                //console.log(donhang)
+                 var n = donhang_x.length
+                 var code = donhang_x[n-1].madh
+                 code = code.substring(2,5)
+                 var madh="dh00"+(parseInt(code)+1).toString()
+                 console.log(madh)
+
+                 var ThanhToan = ''
+                var TinhTrangThanhToan =''
+                if(req.body.value==='first')
+                {
+                    ThanhToan = "Trực tiếp"
+                    TinhTrangThanhToan = "Chưa thanh toán"
+                } 
+                else
+                {
+                    ThanhToan = "Trực tuyến"
+                    TinhTrangThanhToan = "Đã thanh toán"
+                }
+                var FormData={
+                    ds_sach: req.body.listbuyed,
+                    matk: req.body.matk,
+                    madh: madh,
+                    hinhthucthanhtoan: ThanhToan,
+                    tinhtrangthanhtoan: TinhTrangThanhToan,
+                    tinhtrangdonhang: 'chờ xác nhận',
+                    tongtien: req.body.tongtien
+                }
+
+                FormData = new donhang(FormData)
+                FormData.save()
+                  .then(
+                        res.send({status: 'Success', madh: madh})
+            )
+            })
+        
     }
 
     // thêm vào giỏ hàng
