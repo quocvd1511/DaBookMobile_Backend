@@ -875,7 +875,26 @@ class Client_Control
             .catch(next)
     }
 
-    //list don hang
+    // list all---------------------
+    listvoucher_all(req,res,next)
+    {
+        //console.log(req.query)
+        //console.log('hello')
+        khuyenmai.find({})
+            .then(khuyenmai => {
+                console.log(khuyenmai)
+                //console.log(client_account)
+                //console.log(listcode)
+                //khuyenmai.find({makm: {$in: client_account.danhsach_km }})
+                  //  .then(khuyenmai => 
+                  //  {
+                       // console.log(khuyenmai)
+                        res.send(khuyenmai)
+                   // })
+            })
+    }
+
+    //list user---------------------
 
     listdonhang(req,res,next)
     {
@@ -908,6 +927,7 @@ class Client_Control
     {
         console.log(req.query)
     }
+    //-------------------------------------------------------------------------------
 }
 
 module.exports = new Client_Control

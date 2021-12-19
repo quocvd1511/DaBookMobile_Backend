@@ -17,11 +17,13 @@ route.get('/boloc',client_Control.searchBL)
 route.get('/search/:name', client_Control.search)
 route.get('/theloai/:value', client_Control.searchTL)
 route.get('/logout', client_Control.logout)
-route.get('/', client_Control.main)
 route.get('/payment', client_Control.thanhtoan)
 route.get('/danhsachdonhang', client_Control.listdonhang)
 route.get('/danhsachvoucher', client_Control.listvoucher)
 route.get('/chitietdonhang', client_Control.chitietdonhang)
+route.get('/danhsachvoucher_all', client_Control.listvoucher_all)
+route.get('/', client_Control.main)
+
 
 
 route.get('/',client_Control.get_client)
