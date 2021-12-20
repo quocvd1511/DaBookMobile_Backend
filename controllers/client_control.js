@@ -108,11 +108,11 @@ class Client_Control
                         sodt: req.body.phonenumber,
                         hoten: req.body.name,
                         matkhau: req.body.password,
-                        email: 'Chưa cập nhật',
+                        //email: 'Chưa cập nhật',
                         tinhtrang: "Đang sử dụng",
                         diem: 0,
                         danhsach_km:[],
-                        diachigoc: 'Chưa cập nhật',
+                        //diachigoc: 'Chưa cập nhật',
                         gioitinh: 'Chưa cập nhật',
                         giohang: [],
                         }
@@ -804,12 +804,15 @@ class Client_Control
             .then(donhang_x =>{
                 //console.log(donhang)
                  var n = donhang_x.length
-                 var code = donhang_x[n-1].madh
-                 code = code.substring(2,5)
-                 var madh="dh00"+(parseInt(code)+1).toString()
+                 if(n===0)
+                 {
+                    var code = donhang_x[n-1].madh
+                    code = code.substring(2,5)
+                    var madh="dh00"+(parseInt(code)+1).toString()
+                 }
                  console.log(madh)
 
-                 var ThanhToan = ''
+                var ThanhToan = ''
                 var TinhTrangThanhToan =''
                 if(req.body.value==='first')
                 {
@@ -1006,12 +1009,12 @@ class Client_Control
         console.log('hello')
         client_account.findOne({matk: req.query.matk})
             .then(client_account => {
-                console.log(client_account)
+                //console.log(client_account)
                 //console.log(listcode)
                 khuyenmai.find({makm: {$in: client_account.danhsach_km }})
                     .then(khuyenmai => 
                     {
-                        console.log(khuyenmai)
+                        //console.log(khuyenmai)
                         res.send(khuyenmai)
                     })
             })
@@ -1022,6 +1025,21 @@ class Client_Control
         console.log(req.query)
     }
     //-------------------------------------------------------------------------------
+
+    updatethongtin(req, res,next)
+    {
+        const FormData= req.body.data
+        client_account.updateOne({"matk":FormData.matk},{
+            "hoten": FormData.hoten,
+            "sodt": FormData.sodt,
+            "email": FormData.email,
+            "diachigoc": FormData.diachigoc
+        })
+            .then(() =>
+            {
+                res.send({message: "Cập nhật thông tin thành công"})
+            })
+    }
 }
 
 module.exports = new Client_Control
