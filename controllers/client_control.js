@@ -1032,6 +1032,22 @@ class Client_Control
                 res.send({message: "Cập nhật thông tin thành công"})
             })
     }
+
+    //-----------------------------------
+    laybovoucher(req, res,next)
+    {
+        client_account.findOne({'matk': req.query.matk})
+            .then(client_account =>{
+                khuyenmai.find({"makm": {$in: client_account.danhsach_km}})
+                    .then(khuyenmai =>
+                        {
+                        //console.log("Hello")
+                        //console.log(client_account)
+                        //console.log(khuyenmai)
+                        res.send({taikhoan: client_account, khuyenmai: khuyenmai})
+                    })
+            })
+    }
 }
 
 module.exports = new Client_Control

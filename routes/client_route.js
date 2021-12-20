@@ -24,6 +24,7 @@ route.get('/chitietdonhang', client_Control.chitietdonhang)
 route.get('/danhsachvoucher_all', client_Control.listvoucher_all)
 route.post('/updatethongtintk', client_Control.updatethongtin)
 route.get('/', client_Control.main)
+route.get('/chitiettk_voucher', client_Control.laybovoucher)
 
 route.post('/taodonhang', client_Control.TaoDonHang)
 
