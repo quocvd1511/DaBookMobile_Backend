@@ -6,7 +6,7 @@ const client_Control = require('../controllers/client_control')
 
 route.get('/xoasanpham/:username/:tensach', client_Control.xoasanpham)
 route.get('/nhapkhuyenmai', client_Control.nhapkhuyenmai)
-route.get('/themgiohang/:username/:tensach/:giaban/:hinhanh/:soluong', client_Control.themgiohang)
+route.get('/themgiohang/:username/:tensach/:soluong', client_Control.themgiohang)
 route.get('/chitietgiohang/:username', client_Control.chitietgiohang)
 route.get('/chitiettk', client_Control.chitiettk)
 route.get('/luukhuyenmai/:value', client_Control.luukhuyenmai)

@@ -849,6 +849,7 @@ class Client_Control
         .then(() => 
         {
             res.send(200, 'OK');
+            console.log('OKKKKKK')
         // const tongtien = req.query.giaban * req.query.soluong;
 
         // giohang.find({"matk": req.session.username}).exec(function(err, docs) {
