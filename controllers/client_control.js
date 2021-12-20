@@ -800,41 +800,67 @@ class Client_Control
             .then(donhang_x =>{
                 //console.log(donhang)
                  var n = donhang_x.length
-                 if(n===0)
+                 if(n!=0)
                  {
                     var code = donhang_x[n-1].madh
                     code = code.substring(2,5)
                     var madh="dh00"+(parseInt(code)+1).toString()
+                    var ThanhToan = ''
+                    var TinhTrangThanhToan =''
+                    if(req.body.value==='first')
+                    {
+                        ThanhToan = "Trực tiếp"
+                        TinhTrangThanhToan = "Chưa thanh toán"
+                    } 
+                    else
+                    {
+                        ThanhToan = "Trực tuyến"
+                        TinhTrangThanhToan = "Đã thanh toán"
+                    }
+                    var FormData={
+                        ds_sach: req.body.listbuyed,
+                        matk: req.body.matk,
+                        madh: madh,
+                        hinhthucthanhtoan: ThanhToan,
+                        tinhtrangthanhtoan: TinhTrangThanhToan,
+                        tinhtrangdonhang: 'chờ xác nhận',
+                        tongtien: req.body.tongtien
+                    }
+
+                    FormData = new donhang(FormData)
+                    FormData.save()
+                    .then(res.send({status: 'Success', madh: madh}))
+                 } else
+                 {
+                    var madh="dh00"+(1).toString()
+                    var ThanhToan = ''
+                    var TinhTrangThanhToan =''
+                    if(req.body.value==='first')
+                    {
+                        ThanhToan = "Trực tiếp"
+                        TinhTrangThanhToan = "Chưa thanh toán"
+                    } 
+                    else
+                    {
+                        ThanhToan = "Trực tuyến"
+                        TinhTrangThanhToan = "Đã thanh toán"
+                    }
+                    var FormData={
+                        ds_sach: req.body.listbuyed,
+                        matk: req.body.matk,
+                        madh: madh,
+                        hinhthucthanhtoan: ThanhToan,
+                        tinhtrangthanhtoan: TinhTrangThanhToan,
+                        tinhtrangdonhang: 'chờ xác nhận',
+                        tongtien: req.body.tongtien
+                    }
+
+                    FormData = new donhang(FormData)
+                    FormData.save()
+                    .then(res.send({status: 'Success', madh: madh}))
                  }
-                 console.log(madh)
+                
 
-                var ThanhToan = ''
-                var TinhTrangThanhToan =''
-                if(req.body.value==='first')
-                {
-                    ThanhToan = "Trực tiếp"
-                    TinhTrangThanhToan = "Chưa thanh toán"
-                } 
-                else
-                {
-                    ThanhToan = "Trực tuyến"
-                    TinhTrangThanhToan = "Đã thanh toán"
-                }
-                var FormData={
-                    ds_sach: req.body.listbuyed,
-                    matk: req.body.matk,
-                    madh: madh,
-                    hinhthucthanhtoan: ThanhToan,
-                    tinhtrangthanhtoan: TinhTrangThanhToan,
-                    tinhtrangdonhang: 'chờ xác nhận',
-                    tongtien: req.body.tongtien
-                }
-
-                FormData = new donhang(FormData)
-                FormData.save()
-                  .then(
-                        res.send({status: 'Success', madh: madh})
-            )
             })
         
     }
@@ -966,15 +992,6 @@ class Client_Control
 
     listvoucher(req,res,next)
     {
-<<<<<<< HEAD
-        console.log(req.query)
-        console.log('hello')
-        client_account.findOne({matk: req.query.matk})
-            .then(client_account => {
-                //console.log(client_account)
-                //console.log(listcode)
-                khuyenmai.find({makm: {$in: client_account.danhsach_km }})
-=======
         client_login.findOne({'matk': req.params.username})
 
         .then(thongtintk =>
@@ -984,7 +1001,6 @@ class Client_Control
                 // res.send(thongtintk)
 
                  khuyenmai.find({'makm': {$in: thongtintk.danhsach_km }})
->>>>>>> 630e1dc6e4e48abc07d9a855b7f3140ab7b3d124
                     .then(khuyenmai => 
                     {
                         //console.log(khuyenmai)
