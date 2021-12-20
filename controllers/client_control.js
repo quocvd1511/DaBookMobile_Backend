@@ -717,20 +717,16 @@ class Client_Control
 
     //lưu khuyến mãi
     luukhuyenmai(req,res,next){
-        if(req.session.isAuth){
-        client_login.updateOne({"matk": req.session.username}, 
-            { $push: { "danhsach_km": {"makm": req.params.value} }
+        client_login.updateOne({"matk": req.params.username}, 
+            { $push: { "danhsach_km": req.params.makm }
         })
         .then(() => 
         {
             khuyenmai.updateOne({"makm": req.params.value},
             { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
-                res.redirect('/khuyenmai');
+                res.send(200, 'OK');
             })    
         })
-        }else{
-            res.redirect('/khuyenmai');
-        }
     }
 
     //xem chi tiết tài khoản
@@ -863,41 +859,6 @@ class Client_Control
                                 })
                         })
             })
-        //     { $push: { "giohang": {"tensach": req.params.tensach, "giaban": req.params.giaban, "hinhanh": req.params.hinhanh, "soluong": req.params.soluong}}, 
-        //     $inc: {"sl_giohang": +1}
-        // })
-        // .then(() => 
-        // {
-        //     res.send(200, 'OK');
-            //console.log('OKKKKKK')
-        // const tongtien = req.query.giaban * req.query.soluong;
-
-        // giohang.find({"matk": req.session.username}).exec(function(err, docs) {
-        //     if (docs.length){
-        //         giohang.updateOne({"matk": req.session.username},
-        //         { $push: { "ds_sach": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}}, 
-        //         $inc: {"sl_sach": +1, "tongtien": + tongtien}
-        //         })
-        //         .then(() => 
-        //         {
-        //             res.redirect('/chitietsach/' + req.query.tensach);
-        //         }).catch(next)
-        //     } else {
-        //         const newgiohang = new giohang({
-        //             matk: req.session.username,
-        //             sl_sach: 1,
-        //             tongtien: tongtien,
-        //             $push: {"ds_sach": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong}},
-        //             diachigh: req.query.diachigh,
-        //         });
-                
-        //         newgiohang.save(function (err, gh) {
-        //             if (err) return console.error(err);
-        //             res.redirect('/chitietsach/' + req.query.tensach)
-        //           });
-        //       }
-        //     });
-        //}) .catch(next);
     }
 
     //Xóa khỏi giỏ hàng
@@ -1002,19 +963,24 @@ class Client_Control
 
     listvoucher(req,res,next)
     {
-        console.log(req.query)
-        console.log('hello')
-        client_account.findOne({matk: req.query.matk})
-            .then(client_account => {
-                console.log(client_account)
-                //console.log(listcode)
-                khuyenmai.find({makm: {$in: client_account.danhsach_km }})
+        client_login.findOne({'matk': req.params.username})
+
+        .then(thongtintk =>
+
+            {
+                // console.log(thongtintk)
+                // res.send(thongtintk)
+
+                 khuyenmai.find({'makm': {$in: thongtintk.danhsach_km }})
                     .then(khuyenmai => 
                     {
                         console.log(khuyenmai)
                         res.send(khuyenmai)
                     })
+
             })
+
+        .catch(next)
     }
 
     chitietdonhang(req,res,next)
