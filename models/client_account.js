@@ -21,7 +21,7 @@ const client_account = new Schema({
       tensach: String,
       giaban: Number,
       hinhanh: String,
-      soluong: Number,
+      SoLuong: Number,
     }],
     sl_giohang: Number,
   });

@@ -842,14 +842,34 @@ class Client_Control
 
     // thêm vào giỏ hàng
     themgiohang(req,res,next){
-        client_account.updateOne({"matk": req.params.username},
-            { $push: { "giohang": {"tensach": req.params.tensach, "giaban": req.params.giaban, "hinhanh": req.params.hinhanh, "soluong": req.params.soluong}}, 
-            $inc: {"sl_giohang": +1}
-        })
-        .then(() => 
-        {
-            res.send(200, 'OK');
-            console.log('OKKKKKK')
+        client_account.findOne({"matk": req.params.username})
+            .then((user) =>
+                {
+                    console.log(user)
+                    books.findOne({"tensach": req.params.tensach})
+                        .then(sach => 
+                        {
+                            // const FormData ={
+                            //     tensach: sach.tensach,
+                            //     giaban: sach.giaban,
+                            //     hinhanh: sach.hinhanh,
+                            //     SoLuong: 1,
+                            // }
+                            client_account.updateOne({"matk": user.matk},
+                            { $push: { "giohang": {"tensach": sach.tensach, "giaban": sach.giaban.toString(), "hinhanh": sach.hinhanh, "SoLuong": 1 }}})
+                                .then(() =>{
+                                    console.log('OK')
+                                    res.send('OK')
+                                })
+                        })
+            })
+        //     { $push: { "giohang": {"tensach": req.params.tensach, "giaban": req.params.giaban, "hinhanh": req.params.hinhanh, "soluong": req.params.soluong}}, 
+        //     $inc: {"sl_giohang": +1}
+        // })
+        // .then(() => 
+        // {
+        //     res.send(200, 'OK');
+            //console.log('OKKKKKK')
         // const tongtien = req.query.giaban * req.query.soluong;
 
         // giohang.find({"matk": req.session.username}).exec(function(err, docs) {
@@ -877,7 +897,7 @@ class Client_Control
         //           });
         //       }
         //     });
-        }) .catch(next);
+        //}) .catch(next);
     }
 
     //Xóa khỏi giỏ hàng
