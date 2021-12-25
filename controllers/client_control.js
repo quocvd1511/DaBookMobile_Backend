@@ -208,20 +208,6 @@ class Client_Control
     {   
          // lấy giá trị của key name trong query parameters gửi lên
          console.log(req.params.name);
-         if(req.session.isAuth) {
-            client_login.findOne({'matk': req.session.username}).then((thongtintk => {
-                thongtintk=mongooseToObject(thongtintk);
-                books.find({ $or :[
-                    { 'tensach' : {'$regex' : req.params.name , '$options' : 'i'}},
-                    { 'tacgia' :  {'$regex' : req.params.name , '$options' : 'i'}}
-                ]})
-                .then(books => 
-                    { 
-                        books=books.map(course => course.toObject())
-                        res.send(books,thongtintk);
-                    })
-                .catch(next)}))     
-         }else{
             books.find({ $or :[
                 { 'tensach' : {'$regex' : req.params.name , '$options' : 'i'}},
                     { 'tacgia' :  {'$regex' : req.params.name , '$options' : 'i'}}
@@ -233,7 +219,6 @@ class Client_Control
                     res.send(books);
                 })
             .catch(next)
-         }
     }
 
     // Tìm kiếm theo danh sách các thể loại
@@ -720,18 +705,37 @@ class Client_Control
 
     //lưu khuyến mãi
     luukhuyenmai(req,res,next){
-        client_login.updateOne({"matk": req.params.username}, 
-            { $push: { "danhsach_km": req.params.makm }
-        })
-        .then(() => 
-        {
-            khuyenmai.updateOne({"makm": req.params.value},
-            { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
-                res.send(200, 'OK');
-            })    
-        })
-    }
+        // client_login.updateOne({"matk": req.query.username}, 
+        //     { $push: { "danhsach_km": req.query.makm }
+        // })
+        // .then(() => 
+        // {
+        //     khuyenmai.updateOne({"makm": req.params.value},
+        //     { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
+        //         res.send(200, 'OK');
+        //     })    
+        // })
 
+        console.log(req.query.username, req.query.manhap, req.query.ngaykt)
+        //req.body = JSON.parse(req.body)
+       //console.log(req.body)
+       client_account.findOne({'matk': req.query.username})
+        .then(() =>
+            {
+                    client_account.updateOne({"matk": req.query.username},
+                    { $push: { "danhsach_km": {"makm": req.query.makm, "manhap": req.query.manhap, "phantram": req.query.phantram, "ngaykt": req.query.ngaykt}}
+                    })
+                        .then(() => 
+                        {
+                            console.log("THÊM KHUYẾN MÃI")
+                            khuyenmai.updateOne({"makm": req.query.makm},
+                            { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
+                                res.send(200, 'OK');
+                            })    
+                        })
+            
+        });
+    }
     //xem chi tiết tài khoản
     // chitiettk(req,res,next){
     //     client_login.findOne({'matk': req.session.username})
@@ -1060,14 +1064,9 @@ class Client_Control
     {
         client_account.findOne({'matk': req.query.matk})
             .then(client_account =>{
-                khuyenmai.find({"makm": {$in: client_account.danhsach_km}})
-                    .then(khuyenmai =>
-                        {
-                        //console.log("Hello")
-                        console.log(client_account)
-                        console.log(khuyenmai)
-                        res.send({taikhoan: client_account, khuyenmai: khuyenmai})
-                    })
+               
+                const khuyenmai = client_account.danhsach_km;
+                res.send({taikhoan: client_account, khuyenmai: khuyenmai})
             })
     }
 }
