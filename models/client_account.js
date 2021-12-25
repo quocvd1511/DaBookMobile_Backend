@@ -23,7 +23,8 @@ const client_account = new Schema({
       tensach: String,
       giaban: Number,
       hinhanh: String,
-      SoLuong: Number,
+      soluong: Number,
+      theloai: String,
     }],
     sl_giohang: Number,
   });

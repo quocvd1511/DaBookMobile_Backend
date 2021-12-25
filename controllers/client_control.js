@@ -1042,8 +1042,8 @@ class Client_Control
                     .then(khuyenmai =>
                         {
                         //console.log("Hello")
-                        //console.log(client_account)
-                        //console.log(khuyenmai)
+                        console.log(client_account)
+                        console.log(khuyenmai)
                         res.send({taikhoan: client_account, khuyenmai: khuyenmai})
                     })
             })
