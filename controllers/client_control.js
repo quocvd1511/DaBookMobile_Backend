@@ -239,6 +239,7 @@ class Client_Control
     // Tìm kiếm theo danh sách các thể loại
     searchTL(req,res,next)
     {   
+        console.log(req.params.value)
             if(req.session.isAuth) {
                 client_login.findOne({'matk': req.session.username}).then((thongtintk => {
                     thongtintk=mongooseToObject(thongtintk);
@@ -257,7 +258,9 @@ class Client_Control
                 )
                 .then(books => 
                     {
+
                         books=books.map(course => course.toObject())
+                        console.log(books)
                         res.status(200).send({books});
                     })
                 .catch(next)
@@ -867,26 +870,45 @@ class Client_Control
 
     // thêm vào giỏ hàng
     themgiohang(req,res,next){
-        client_account.findOne({"matk": req.params.username})
-            .then((user) =>
+        // client_account.updateOne({"matk": req.params.username},
+        // { $push: { "giohang": {"tensach": req.params.tensach, "giaban": req.params.giaban, "hinhanh": req.params.hinhanh, "soluong": req.params.soluong}}})
+        //     .then(() =>{
+        //         console.log('OK')
+        //         res.send('OK')
+        //     })
+        // req.session.username=req.params.username
+        // req.session.isAuth = true
+        console.log(req.query.username, req.query.theloai, req.query.soluong)
+        //req.body = JSON.parse(req.body)
+       //console.log(req.body)
+       let soluong = Number(req.query.soluong);
+       client_account.findOne({'matk': req.query.username})
+        .then(thongtintk =>
+            {
+                //console.log(thongtintk)
+                var cart = thongtintk.giohang
+                var flag=false
+                for(var i=0; i<cart.length;i++)
                 {
-                    console.log(user)
-                    books.findOne({"tensach": req.params.tensach})
-                        .then(sach => 
-                        {
-                            // const FormData ={
-                            //     tensach: sach.tensach,
-                            //     giaban: sach.giaban,
-                            //     hinhanh: sach.hinhanh,
-                            //     SoLuong: 1,
-                            // }
-                            client_account.updateOne({"matk": user.matk},
-                            { $push: { "giohang": {"tensach": sach.tensach, "giaban": sach.giaban.toString(), "hinhanh": sach.hinhanh, "SoLuong": 1 }}})
-                                .then(() =>{
-                                    console.log('OK')
-                                    res.send('OK')
-                                })
-                        })
+                    if(cart[i].tensach===req.query.tensach)
+                    {
+                        flag=true
+                        cart[i].soluong+=soluong
+                    }
+                }
+                if(flag===true)
+                {
+                    client_account.updateOne({'matk': req.query.username},{'giohang': cart})
+                        .then(res.send('Update'))
+                }
+                else
+                {
+                    client_account.updateOne({"matk": req.query.username},
+                    { $push: { "giohang": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong, "theloai": req.query.theloai}}, 
+                    $inc: {"sl_giohang": +1}
+                    })
+                        .then(res.send('Add'))
+                }
             })
     }
 
