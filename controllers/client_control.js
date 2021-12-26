@@ -216,7 +216,7 @@ class Client_Control
                 {
                     books=books.map(course => course.toObject())
                     console.log(books);
-                    res.send(books);
+                    res.send({books});
                 })
             .catch(next)
     }
@@ -1008,11 +1008,11 @@ class Client_Control
 
     listdonhang(req,res,next)
     {
-        console.log(req.query)
-        donhang.find({matk:req.query.matk, tinhtrangdonhang: req.query.tinhtrang})
-            .then(donhang =>{
-                //console.log(donhang)
-                res.send(donhang)
+        console.log(req.params.matk) 
+        donhang.find({'matk':req.params.matk, 'tinhtrangdonhang': req.params.tinhtrang})
+            .then(donhang => {
+                console.log(donhang)
+                res.send({donhang})
             })
     }
 
@@ -1028,7 +1028,17 @@ class Client_Control
 
     chitietdonhang(req,res,next)
     {
-        console.log(req.query)
+        console.log(req.params.matk, req.params.madh)
+        donhang.findOne({'matk':req.params.matk, 'madh': req.params.madh})
+            .then(donhang => {
+                console.log(donhang)
+                const books = donhang.ds_sach;
+                client_account.findOne({'matk': req.params.matk})
+                .then(client_account =>{
+                
+                    res.send({taikhoan: client_account, books: books, donhang: donhang})
+                })
+            })
     }
     //-------------------------------------------------------------------------------
 
