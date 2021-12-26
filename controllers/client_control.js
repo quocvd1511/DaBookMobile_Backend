@@ -1018,24 +1018,12 @@ class Client_Control
 
     listvoucher(req,res,next)
     {
-        client_login.findOne({'matk': req.params.username})
-
-        .then(thongtintk =>
-
-            {
-                // console.log(thongtintk)
-                // res.send(thongtintk)
-
-                 khuyenmai.find({'makm': {$in: thongtintk.danhsach_km }})
-                    .then(khuyenmai => 
-                    {
-                        //console.log(khuyenmai)
-                        res.send(khuyenmai)
-                    })
-
+        client_account.findOne({'matk': req.params.username})
+            .then(client_account =>{
+               
+                const khuyenmai = client_account.danhsach_km;
+                res.send({khuyenmai})
             })
-
-        .catch(next)
     }
 
     chitietdonhang(req,res,next)
@@ -1068,6 +1056,18 @@ class Client_Control
                 const khuyenmai = client_account.danhsach_km;
                 res.send({taikhoan: client_account, khuyenmai: khuyenmai})
             })
+    }
+
+    capnhatmatkhau(req,res,next)
+    {
+        console.log(req.query.matkhau)
+        client_account.updateOne({"matk": req.query.username},
+            { "matkhau": req.query.matkhau,
+        })
+        .then(() => 
+        {
+            res.send('OK')
+        });
     }
 }
 

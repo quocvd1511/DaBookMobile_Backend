@@ -12,7 +12,9 @@ const client_account = new Schema({
     danhsach_km: [{
       phantram: Number,
       manhap: String,
-      ngaykt: Date,
+      ngaykt: {type: Date,
+        transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()
+      },
       makm: String,
     }],
     diachigh: {
