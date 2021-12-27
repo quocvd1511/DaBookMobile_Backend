@@ -9,6 +9,7 @@ const donhang = new Schema({
     vanchuyen: String,
     makm: Array,
     tongtien: Number,
+    tiengiam: Number,
     thongtinnguoinhan: String,
     tinhtrangthanhtoan: String,
     tinhtrangdonhang: String,

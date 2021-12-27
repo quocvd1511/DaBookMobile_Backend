@@ -26,6 +26,7 @@ const client_account = new Schema({
       SoLuong: Number,
     }],
     sl_giohang: Number,
+    diachi: {type: String, default: ""}
   });
   
 module.exports = mogoose.model('client_accounts',client_account)

@@ -792,7 +792,7 @@ class Client_Control
             hinhthucthanhtoan: ThanhToan,
             tinhtrangthanhtoan: TinhTrangThanhToan,
             tinhtrangdonhang: 'chờ xác nhận',
-            tongtien: req.body.tongtien
+            tongtien: req.body.tongtien,
         }
 
         FormData = new donhang(FormData)
@@ -829,7 +829,8 @@ class Client_Control
 
                     FormData = new donhang(FormData)
                     FormData.save()
-                    .then(res.send({status: 'Success', madh: madh}))
+                    client_account.updateOne({'matk': req.body.matk},{danhsach_km: req.body.danhsach_km})
+                        .then(res.send({status: 'Success', madh: madh}))
                  } else
                  {
                     var madh="dh00"+(1).toString()
@@ -857,7 +858,8 @@ class Client_Control
 
                     FormData = new donhang(FormData)
                     FormData.save()
-                    .then(res.send({status: 'Success', madh: madh}))
+                    client_account.updateOne({'matk': req.body.matk},{danhsach_km: req.body.danhsach_km})
+                        .then(res.send({status: 'Success', madh: madh}))
                  }
                 
 
@@ -881,7 +883,7 @@ class Client_Control
                             //     SoLuong: 1,
                             // }
                             client_account.updateOne({"matk": user.matk},
-                            { $push: { "giohang": {"tensach": sach.tensach, "giaban": sach.giaban.toString(), "hinhanh": sach.hinhanh, "SoLuong": 1 }}})
+                            { $push: { "giohang": {"tensach": sach.tensach, "giaban": sach.giaban.toString(), "hinhanh": sach.hinhanh, "SoLuong": req.params.soluong }}})
                                 .then(() =>{
                                     console.log('OK')
                                     res.send('OK')
@@ -901,7 +903,8 @@ class Client_Control
         })
         .then(() => 
         {
-            res.send(200, 'OK')
+            console.log("Haha")
+            res.send("OK")
         })
         .catch(next)
     }
@@ -981,13 +984,54 @@ class Client_Control
     //list user---------------------
 
     listdonhang(req,res,next)
+
     {
-        console.log(req.query)
-        donhang.find({matk:req.query.matk, tinhtrangdonhang: req.query.tinhtrang})
-            .then(donhang =>{
-                //console.log(donhang)
-                res.send(donhang)
-            })
+        donhang.find(
+
+            { 'matk' : req.params.matk, 'tinhtrangdonhang' :  req.params.tinhtrang}
+
+        )
+
+        .then(donhang_x =>
+
+            {
+
+                    client_login.findOne({'matk': req.params.matk})
+
+                    .then(thongtintk => {
+
+                    const book = donhang_x.ds_sach;
+
+                    console.log(donhang_x)
+
+                    res.send(200, {donhang_x, book, thongtintk})
+
+                    })
+
+            }).catch(next)
+
+    }
+
+    lichsudonhang(req,res,next)
+    {
+        donhang.find({'matk': req.params.matk})
+
+        .then(donhang_x =>
+            {
+
+                    client_login.findOne({'matk': req.params.matk})
+
+                    .then(thongtintk => {
+
+                    // const book = donhang_x.ds_sach;
+
+                    // console.log(thongtintk, book, donhang_x)
+
+                    res.send(200, {donhang_x: donhang_x, thongtintk: thongtintk})
+
+                    })
+
+            }).catch(next)
     }
 
     listvoucher(req,res,next)
@@ -1025,7 +1069,8 @@ class Client_Control
             "hoten": FormData.hoten,
             "sodt": FormData.sodt,
             "email": FormData.email,
-            "diachigoc": FormData.diachigoc
+            "diachigoc": FormData.diachigoc,
+            "diachi": FormData.diachi
         })
             .then(() =>
             {
@@ -1044,6 +1089,7 @@ class Client_Control
                         //console.log("Hello")
                         //console.log(client_account)
                         //console.log(khuyenmai)
+                        console.log(client_account)
                         res.send({taikhoan: client_account, khuyenmai: khuyenmai})
                     })
             })

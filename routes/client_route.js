@@ -18,14 +18,14 @@ route.get('/search/:name', client_Control.search)
 route.get('/theloai/:value', client_Control.searchTL)
 route.get('/logout', client_Control.logout)
 route.get('/payment', client_Control.thanhtoan)
-route.get('/danhsachdonhang', client_Control.listdonhang)
+route.get('/danhsachdonhang/:matk/:tinhtrang', client_Control.listdonhang)
 route.get('/danhsachvoucher/:username', client_Control.listvoucher)
 route.get('/chitietdonhang', client_Control.chitietdonhang)
 route.get('/danhsachvoucher_all', client_Control.listvoucher_all)
 route.post('/updatethongtintk', client_Control.updatethongtin)
 route.get('/', client_Control.main)
 route.get('/chitiettk_voucher', client_Control.laybovoucher)
-
+route.get('/lichsudonhang/:matk', client_Control.lichsudonhang)
 route.post('/taodonhang', client_Control.TaoDonHang)
 
 
