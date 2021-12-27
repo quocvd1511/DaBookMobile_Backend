@@ -882,9 +882,7 @@ class Client_Control
         //     })
         // req.session.username=req.params.username
         // req.session.isAuth = true
-        console.log(req.query.username, req.query.theloai, req.query.soluong)
-        //req.body = JSON.parse(req.body)
-       //console.log(req.body)
+       console.log(req.query.username, req.query.theloai, req.query.soluong)
        let soluong = Number(req.query.soluong);
        client_account.findOne({'matk': req.query.username})
         .then(thongtintk =>
