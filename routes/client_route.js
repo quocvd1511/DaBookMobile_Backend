@@ -4,6 +4,8 @@ const route = express.Router()
 const client_Control = require('../controllers/client_control')
 
 
+route.get('/ds_sachdaxem', client_Control.ds_sachdaxem)
+route.get('/sachdaxem', client_Control.sachdaxem)
 route.get('/capnhatmatkhau', client_Control.capnhatmatkhau)
 route.get('/xoasanpham/:username/:tensach', client_Control.xoasanpham)
 route.get('/nhapkhuyenmai', client_Control.nhapkhuyenmai)

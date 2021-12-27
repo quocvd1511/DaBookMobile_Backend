@@ -43,6 +43,13 @@ const client_account = new Schema({
       soluong: Number,
       theloai: String,
     }],
+    daxem: [{
+      masach: String,
+      tensach: String,
+      giaban: Number,
+      hinhanh: String,
+      ngayxem: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()},
+    }],
     sl_giohang: Number,
   });
   

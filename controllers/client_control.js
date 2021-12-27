@@ -1077,6 +1077,26 @@ class Client_Control
             res.send('OK')
         });
     }
+
+    sachdaxem(req, res, next){
+        console.log(req.query.username, req.query.tensach, ' SÁCH ĐÃ XEMMMMMMMMMM')
+         client_account.updateOne({"matk": req.query.username},
+        { $push: { "daxem": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh}}})
+            .then(() =>{
+                console.log('OK')
+                res.send('OK')
+            })
+    }
+
+    ds_sachdaxem(req,res,next)
+    {
+        client_account.findOne({'matk': req.query.username})
+            .then(client_account =>{
+               
+                const books = client_account.daxem;
+                res.send({books})
+            })
+    }
 }
 
 module.exports = new Client_Control
