@@ -208,20 +208,6 @@ class Client_Control
     {   
          // lấy giá trị của key name trong query parameters gửi lên
          console.log(req.params.name);
-         if(req.session.isAuth) {
-            client_login.findOne({'matk': req.session.username}).then((thongtintk => {
-                thongtintk=mongooseToObject(thongtintk);
-                books.find({ $or :[
-                    { 'tensach' : {'$regex' : req.params.name , '$options' : 'i'}},
-                    { 'tacgia' :  {'$regex' : req.params.name , '$options' : 'i'}}
-                ]})
-                .then(books => 
-                    { 
-                        books=books.map(course => course.toObject())
-                        res.send(books,thongtintk);
-                    })
-                .catch(next)}))     
-         }else{
             books.find({ $or :[
                 { 'tensach' : {'$regex' : req.params.name , '$options' : 'i'}},
                     { 'tacgia' :  {'$regex' : req.params.name , '$options' : 'i'}}
@@ -230,15 +216,15 @@ class Client_Control
                 {
                     books=books.map(course => course.toObject())
                     console.log(books);
-                    res.send(books);
+                    res.send({books});
                 })
             .catch(next)
-         }
     }
 
     // Tìm kiếm theo danh sách các thể loại
     searchTL(req,res,next)
     {   
+        console.log(req.params.value)
             if(req.session.isAuth) {
                 client_login.findOne({'matk': req.session.username}).then((thongtintk => {
                     thongtintk=mongooseToObject(thongtintk);
@@ -257,7 +243,9 @@ class Client_Control
                 )
                 .then(books => 
                     {
+
                         books=books.map(course => course.toObject())
+                        console.log(books)
                         res.status(200).send({books});
                     })
                 .catch(next)
@@ -717,18 +705,37 @@ class Client_Control
 
     //lưu khuyến mãi
     luukhuyenmai(req,res,next){
-        client_login.updateOne({"matk": req.params.username}, 
-            { $push: { "danhsach_km": req.params.makm }
-        })
-        .then(() => 
-        {
-            khuyenmai.updateOne({"makm": req.params.value},
-            { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
-                res.send(200, 'OK');
-            })    
-        })
-    }
+        // client_login.updateOne({"matk": req.query.username}, 
+        //     { $push: { "danhsach_km": req.query.makm }
+        // })
+        // .then(() => 
+        // {
+        //     khuyenmai.updateOne({"makm": req.params.value},
+        //     { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
+        //         res.send(200, 'OK');
+        //     })    
+        // })
 
+        console.log(req.query.username, req.query.manhap, req.query.ngaykt)
+        //req.body = JSON.parse(req.body)
+       //console.log(req.body)
+       client_account.findOne({'matk': req.query.username})
+        .then(() =>
+            {
+                    client_account.updateOne({"matk": req.query.username},
+                    { $push: { "danhsach_km": {"makm": req.query.makm, "manhap": req.query.manhap, "phantram": req.query.phantram, "ngaykt": req.query.ngaykt}}
+                    })
+                        .then(() => 
+                        {
+                            console.log("THÊM KHUYẾN MÃI")
+                            khuyenmai.updateOne({"makm": req.query.makm},
+                            { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
+                                res.send(200, 'OK');
+                            })    
+                        })
+            
+        });
+    }
     //xem chi tiết tài khoản
     // chitiettk(req,res,next){
     //     client_login.findOne({'matk': req.session.username})
@@ -869,26 +876,45 @@ class Client_Control
 
     // thêm vào giỏ hàng
     themgiohang(req,res,next){
-        client_account.findOne({"matk": req.params.username})
-            .then((user) =>
+        // client_account.updateOne({"matk": req.params.username},
+        // { $push: { "giohang": {"tensach": req.params.tensach, "giaban": req.params.giaban, "hinhanh": req.params.hinhanh, "soluong": req.params.soluong}}})
+        //     .then(() =>{
+        //         console.log('OK')
+        //         res.send('OK')
+        //     })
+        // req.session.username=req.params.username
+        // req.session.isAuth = true
+        console.log(req.query.username, req.query.theloai, req.query.soluong)
+        //req.body = JSON.parse(req.body)
+       //console.log(req.body)
+       let soluong = Number(req.query.soluong);
+       client_account.findOne({'matk': req.query.username})
+        .then(thongtintk =>
+            {
+                //console.log(thongtintk)
+                var cart = thongtintk.giohang
+                var flag=false
+                for(var i=0; i<cart.length;i++)
                 {
-                    console.log(user)
-                    books.findOne({"tensach": req.params.tensach})
-                        .then(sach => 
-                        {
-                            // const FormData ={
-                            //     tensach: sach.tensach,
-                            //     giaban: sach.giaban,
-                            //     hinhanh: sach.hinhanh,
-                            //     SoLuong: 1,
-                            // }
-                            client_account.updateOne({"matk": user.matk},
-                            { $push: { "giohang": {"tensach": sach.tensach, "giaban": sach.giaban.toString(), "hinhanh": sach.hinhanh, "SoLuong": req.params.soluong }}})
-                                .then(() =>{
-                                    console.log('OK')
-                                    res.send('OK')
-                                })
-                        })
+                    if(cart[i].tensach===req.query.tensach)
+                    {
+                        flag=true
+                        cart[i].soluong+=soluong
+                    }
+                }
+                if(flag===true)
+                {
+                    client_account.updateOne({'matk': req.query.username},{'giohang': cart})
+                        .then(res.send('Update'))
+                }
+                else
+                {
+                    client_account.updateOne({"matk": req.query.username},
+                    { $push: { "giohang": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh, "soluong": req.query.soluong, "theloai": req.query.theloai}}, 
+                    $inc: {"sl_giohang": +1}
+                    })
+                        .then(res.send('Add'))
+                }
             })
     }
 
@@ -986,79 +1012,37 @@ class Client_Control
     listdonhang(req,res,next)
 
     {
-        donhang.find(
-
-            { 'matk' : req.params.matk, 'tinhtrangdonhang' :  req.params.tinhtrang}
-
-        )
-
-        .then(donhang_x =>
-
-            {
-
-                    client_login.findOne({'matk': req.params.matk})
-
-                    .then(thongtintk => {
-
-                    const book = donhang_x.ds_sach;
-
-                    console.log(donhang_x)
-
-                    res.send(200, {donhang_x, book, thongtintk})
-
-                    })
-
-            }).catch(next)
-
-    }
-
-    lichsudonhang(req,res,next)
-    {
-        donhang.find({'matk': req.params.matk})
-
-        .then(donhang_x =>
-            {
-
-                    client_login.findOne({'matk': req.params.matk})
-
-                    .then(thongtintk => {
-
-                    // const book = donhang_x.ds_sach;
-
-                    // console.log(thongtintk, book, donhang_x)
-
-                    res.send(200, {donhang_x: donhang_x, thongtintk: thongtintk})
-
-                    })
-
-            }).catch(next)
+        console.log(req.params.matk) 
+        donhang.find({'matk':req.params.matk, 'tinhtrangdonhang': req.params.tinhtrang})
+            .then(donhang => {
+                console.log(donhang)
+                res.send({donhang})
+            })
     }
 
     listvoucher(req,res,next)
     {
-        client_login.findOne({'matk': req.params.username})
-
-        .then(thongtintk =>
-
-            {
-                // console.log(thongtintk)
-                // res.send(thongtintk)
-
-                 khuyenmai.find({'makm': {$in: thongtintk.danhsach_km }})
-                    .then(khuyenmai => 
-                    {
-                        //console.log(khuyenmai)
-                        res.send(khuyenmai)
-                    })
-
+        client_account.findOne({'matk': req.params.username})
+            .then(client_account =>{
+               
+                const khuyenmai = client_account.danhsach_km;
+                res.send({khuyenmai})
             })
-
-        .catch(next)
     }
 
     chitietdonhang(req,res,next)
     {
-        console.log(req.query)
+        console.log(req.params.matk, req.params.madh)
+        donhang.findOne({'matk':req.params.matk, 'madh': req.params.madh})
+            .then(donhang => {
+                console.log(donhang)
+                const books = donhang.ds_sach;
+                client_account.findOne({'matk': req.params.matk})
+                .then(client_account =>{
+                
+                    res.send({taikhoan: client_account, books: books, donhang: donhang})
+                })
+            })
     }
     //-------------------------------------------------------------------------------
 
@@ -1083,16 +1067,21 @@ class Client_Control
     {
         client_account.findOne({'matk': req.query.matk})
             .then(client_account =>{
-                khuyenmai.find({"makm": {$in: client_account.danhsach_km}})
-                    .then(khuyenmai =>
-                        {
-                        //console.log("Hello")
-                        //console.log(client_account)
-                        //console.log(khuyenmai)
-                        console.log(client_account)
-                        res.send({taikhoan: client_account, khuyenmai: khuyenmai})
-                    })
+                const khuyenmai = client_account.danhsach_km;
+                res.send({taikhoan: client_account, khuyenmai: khuyenmai})
             })
+    }
+
+    capnhatmatkhau(req,res,next)
+    {
+        console.log(req.query.matkhau)
+        client_account.updateOne({"matk": req.query.username},
+            { "matkhau": req.query.matkhau,
+        })
+        .then(() => 
+        {
+            res.send('OK')
+        });
     }
 }
 
