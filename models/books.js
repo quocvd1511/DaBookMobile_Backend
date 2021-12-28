@@ -31,6 +31,17 @@ const Book = new Schema({
   soluongton:String,
   ngonngu:String,
   giagoc:Number,
+  danhgia: [
+    {
+      matk: String,
+      noidung: String,
+      sao: Number,
+      ngaydg: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()}
+    }
+  ],
+  danhgiatb: Number,
+  tongdiem: Number,
+  soluotdanhgia: { type: Number, default: 0}
   });
 
 module.exports = mogoose.model('Book',Book)

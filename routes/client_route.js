@@ -28,6 +28,8 @@ route.get('/danhsachvoucher_all', client_Control.listvoucher_all)
 route.post('/updatethongtintk', client_Control.updatethongtin)
 route.get('/', client_Control.main)
 route.get('/chitiettk_voucher', client_Control.laybovoucher)
+route.post('/guicomment', client_Control.danhgiasach)
+route.get('/danhsachcomment', client_Control.danhsachcomment)
 //route.get('/lichsudonhang/:matk', client_Control.lichsudonhang)
 route.post('/taodonhang', client_Control.TaoDonHang)
 

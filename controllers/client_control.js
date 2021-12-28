@@ -1083,7 +1083,7 @@ class Client_Control
     }
 
     sachdaxem(req, res, next){
-        console.log(req.query.username, req.query.tensach, ' SÁCH ĐÃ XEMMMMMMMMMM')
+        //console.log(req.query.username, req.query.tensach, ' SÁCH ĐÃ XEMMMMMMMMMM')
          client_account.updateOne({"matk": req.query.username},
         { $push: { "daxem": {"tensach": req.query.tensach, "giaban": req.query.giaban, "hinhanh": req.query.hinhanh}}})
             .then(() =>{
@@ -1099,6 +1099,45 @@ class Client_Control
                
                 const books = client_account.daxem;
                 res.send({books})
+            })
+    }
+
+    danhgiasach(req,res,next)
+    {
+        books.updateOne({tensach: req.body.tensach},{
+            $push: {danhgia: {matk: req.body.username, noidung: req.body.noidung, sao: req.body.sao}},
+            $inc: {tongdiem: +req.body.sao},
+            $inc: {soluotdanhgia: +1},
+        })
+            .then(() =>
+            {
+                //console.log('Hehehehehe')
+                res.send('OK')
+            }
+            )
+    }
+
+    danhsachcomment(req,res,next)
+    {
+        books.findOne({tensach: req.query.tensach})
+            .then(chitietsach =>
+            {
+                var dadanhgia=false
+                var sosaodanhgia=0
+                var danhsachcomment = chitietsach.danhgia
+                for(var i=0;i<danhsachcomment.length;i++)
+                {
+                    if(danhsachcomment[i].matk===req.query.matk)
+                    {
+                        dadanhgia=true
+                        sosaodanhgia=danhsachcomment[i].sao
+                        break
+                    }
+                }
+
+                //console.log(danhsachdanhgia)
+
+                res.send({danhsachdanhgia: danhsachcomment, dadanhgia: dadanhgia, sosaodanhgia: sosaodanhgia})
             })
     }
 }
