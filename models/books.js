@@ -26,8 +26,6 @@ const Book = new Schema({
   mota:String,
   giaban:Number, 
   giamgia: Number,
-  sodanhgia:String,
-  sobinhchon:String,
   soluongton:String,
   ngonngu:String,
   giagoc:Number,
@@ -41,7 +39,8 @@ const Book = new Schema({
   ],
   danhgiatb: Number,
   tongdiem: Number,
-  soluotdanhgia: { type: Number, default: 0}
+  soluotdanhgia: { type: Number, default: 0},
+  soluongdaban: {type: Number, default: 0}
   });
 
 module.exports = mogoose.model('Book',Book)

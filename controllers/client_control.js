@@ -715,23 +715,26 @@ class Client_Control
         //         res.send(200, 'OK');
         //     })    
         // })
-
-        console.log(req.query.username, req.query.manhap, req.query.ngaykt)
-        //req.body = JSON.parse(req.body)
-       //console.log(req.body)
-       client_account.findOne({'matk': req.query.username})
+        console.log(req.body)
+       client_account.findOne({'matk': req.body.username})
         .then(() =>
             {
-                    client_account.updateOne({"matk": req.query.username},
-                    { $push: { "danhsach_km": {"makm": req.query.makm, "manhap": req.query.manhap, "phantram": req.query.phantram, "ngaykt": req.query.ngaykt}}
-                    })
-                        .then(() => 
+                khuyenmai.findOne({makm: req.body.makm})
+                    .then(khuyenmai =>
                         {
-                            console.log("THÊM KHUYẾN MÃI")
-                            khuyenmai.updateOne({"makm": req.query.makm},
-                            { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
-                                res.send(200, 'OK');
-                            })    
+                            var tempdate = khuyenmai.ngaykt
+                            tempdate = new Date(tempdate)
+                            client_account.updateOne({"matk": req.body.username},
+                            { $push: { "danhsach_km": {"makm": req.body.makm, "manhap": req.body.manhap, "phantram": req.body.phantram, "ngaykt": tempdate, "dieukien": req.body.dieukien, "img": req.body.img}}
+                            })
+                                .then(() => 
+                                {
+                                    console.log("THÊM KHUYẾN MÃI")
+                                    khuyenmai.updateOne({"makm": req.body.makm},
+                                    { $inc: {"sl": -1, "daluu": + 1}}).then(()=>{
+                                        res.send(200, 'OK');
+                                    })    
+                                })
                         })
             
         });
@@ -800,9 +803,25 @@ class Client_Control
             tinhtrangthanhtoan: TinhTrangThanhToan,
             tinhtrangdonhang: 'chờ xác nhận',
             tongtien: req.body.tongtien,
+            tienship: req.body.tienship
+        }
+
+
+        var list_book=req.body.listbuyed
+        console.log(list_book)
+        for(var i=0;i<list_book.length;i++)
+        {
+            //console.log(list_book[i].soluong)
+            books.updateOne({tensach: list_book[i].tensach},
+                {
+                $inc: {soluongdaban: +list_book[i].soluong}
+            })
+            .then(console.log())
         }
 
         FormData = new donhang(FormData)
+        console.log('FormData nè')
+        console.log(FormData)
         donhang.find({})
             .then(donhang_x =>{
                 //console.log(donhang)
@@ -831,7 +850,8 @@ class Client_Control
                         hinhthucthanhtoan: ThanhToan,
                         tinhtrangthanhtoan: TinhTrangThanhToan,
                         tinhtrangdonhang: 'chờ xác nhận',
-                        tongtien: req.body.tongtien
+                        tongtien: req.body.tongtien,
+                        tienship: req.body.tienship
                     }
 
                     FormData = new donhang(FormData)
@@ -860,7 +880,8 @@ class Client_Control
                         hinhthucthanhtoan: ThanhToan,
                         tinhtrangthanhtoan: TinhTrangThanhToan,
                         tinhtrangdonhang: 'chờ xác nhận',
-                        tongtien: req.body.tongtien
+                        tongtien: req.body.tongtien,
+                        tienship: req.body.tienship
                     }
 
                     FormData = new donhang(FormData)
@@ -928,13 +949,14 @@ class Client_Control
         .then(() => 
         {
             console.log("Haha")
-            res.send("OK")
+            res.send({status: "Sách đã được xóa khỏi giỏ hàng"})
         })
         .catch(next)
     }
 
     //xem chi tiết giỏ hàng
-    chitietgiohang(req,res,next){
+    chitietgiohang(req,res,next)
+    {
                 client_login.findOne({'matk': req.params.username})
                 .then(thongtintk => 
                     {
@@ -992,16 +1014,17 @@ class Client_Control
         //console.log(req.query)
         //console.log('hello')
         khuyenmai.find({})
-            .then(khuyenmai => {
-                console.log(khuyenmai)
-                //console.log(client_account)
-                //console.log(listcode)
-                //khuyenmai.find({makm: {$in: client_account.danhsach_km }})
-                  //  .then(khuyenmai => 
-                  //  {
-                       // console.log(khuyenmai)
-                        res.send(khuyenmai)
-                   // })
+            .then(khuyenmai => 
+            {
+                //console.log(listvoucher)
+                client_account.findOne({matk: req.query.username})
+                    .then(thongtintk =>
+                    {
+                        //console.log('Tadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                        //console.log(listvoucher)
+                        var listvoucher=khuyenmai
+                        res.send({listvoucher: listvoucher, ds_km: thongtintk.danhsach_km})
+                    })
             })
     }
 
@@ -1024,6 +1047,7 @@ class Client_Control
             .then(client_account =>{
                
                 const khuyenmai = client_account.danhsach_km;
+                console.log(khuyenmai)
                 res.send({khuyenmai})
             })
     }
@@ -1124,21 +1148,33 @@ class Client_Control
             {
                 var dadanhgia=false
                 var sosaodanhgia=0
-                var danhsachcomment = chitietsach.danhgia
-                for(var i=0;i<danhsachcomment.length;i++)
+                var danhsachcomment=[]
+                if(Boolean(chitietsach.danhgia)===true)
                 {
+                    danhsachcomment=chitietsach.danhgia
+                    for(var i=0;i<danhsachcomment.length;i++)
+                    {
                     if(danhsachcomment[i].matk===req.query.matk)
                     {
                         dadanhgia=true
                         sosaodanhgia=danhsachcomment[i].sao
                         break
                     }
+                  }
                 }
 
                 //console.log(danhsachdanhgia)
 
                 res.send({danhsachdanhgia: danhsachcomment, dadanhgia: dadanhgia, sosaodanhgia: sosaodanhgia})
             })
+    }
+
+    laytopsale(req,res,next)
+    {
+        books.find({}).sort({soluongdaban: -1}).limit(10)
+            .then(listsach =>{
+                res.send({listsach})
+            })    
     }
 }
 
