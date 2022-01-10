@@ -12,7 +12,8 @@ function format_price(price){
 
 const donhang = new Schema({
     madh: String,
-    ngaylap: {type: Date, default: Date.now, transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()},
+    ngaylap: {type: Date, 
+      default: Date.now, transform: v => v.getDate() + "/" + (v.getMonth()+1) + "/" + v.getFullYear()},
     matk: String,
     hinhthucthanhtoan: String,
     vanchuyen: String,

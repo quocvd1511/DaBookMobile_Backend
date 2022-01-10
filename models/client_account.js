@@ -28,6 +28,7 @@ const client_account = new Schema({
       makm: String,
       dieukien: Number,
       img: String,
+      loai: String,
     }],
     diachigh: {
       diachi: String,
