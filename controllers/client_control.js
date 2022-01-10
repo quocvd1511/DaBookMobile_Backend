@@ -108,11 +108,9 @@ class Client_Control
                         sodt: req.body.phonenumber,
                         hoten: req.body.name,
                         matkhau: req.body.password,
-                        //email: 'Chưa cập nhật',
                         tinhtrang: "Đang sử dụng",
                         diem: 0,
                         danhsach_km:[],
-                        //diachigoc: 'Chưa cập nhật',
                         gioitinh: 'Chưa cập nhật',
                         giohang: [],
                         }
@@ -725,7 +723,7 @@ class Client_Control
                             var tempdate = khuyenmai.ngaykt
                             tempdate = new Date(tempdate)
                             client_account.updateOne({"matk": req.body.username},
-                            { $push: { "danhsach_km": {"makm": req.body.makm, "manhap": req.body.manhap, "phantram": req.body.phantram, "ngaykt": tempdate, "dieukien": req.body.dieukien, "img": req.body.img}}
+                            { $push: { "danhsach_km": {"makm": req.body.makm, "manhap": req.body.manhap, "phantram": req.body.phantram, "ngaykt": tempdate, "dieukien": req.body.dieukien, "img": req.body.img, "loai": req.body.loai}}
                             })
                                 .then(() => 
                                 {
@@ -803,7 +801,7 @@ class Client_Control
             tinhtrangthanhtoan: TinhTrangThanhToan,
             tinhtrangdonhang: 'chờ xác nhận',
             tongtien: req.body.tongtien,
-            tienship: req.body.tienship
+            tienship: req.body.tienship,
         }
 
 
@@ -856,8 +854,12 @@ class Client_Control
 
                     FormData = new donhang(FormData)
                     FormData.save()
-                    client_account.updateOne({'matk': req.body.matk},{danhsach_km: req.body.danhsach_km})
-                        .then(res.send({status: 'Success', madh: madh}))
+                    khuyenmai.find({makm: {$in: req.body.danhsach_km}})
+                        .then(khuyenmaiss =>{
+                            client_account.updateOne({'matk': req.body.matk},{danhsach_km: khuyenmaiss})
+                                .then(res.send({status: 'Success', madh: madh}))
+                        })
+
                  } else
                  {
                     var madh="dh00"+(1).toString()
@@ -1090,7 +1092,8 @@ class Client_Control
     laybovoucher(req, res,next)
     {
         client_account.findOne({'matk': req.query.matk})
-            .then(client_account =>{
+            .then(client_account =>
+            {
                 const khuyenmai = client_account.danhsach_km;
                 res.send({taikhoan: client_account, khuyenmai: khuyenmai})
             })
@@ -1145,9 +1148,10 @@ class Client_Control
 
     danhsachcomment(req,res,next)
     {
-        books.findOne({tensach: req.query.tensach})
+        books.findOne({tensach: req.query.tensach}).select('danhgia')
             .then(chitietsach =>
             {
+                console.log(chitietsach)
                 var dadanhgia=false
                 var sosaodanhgia=0
                 var danhsachcomment=[]
@@ -1156,13 +1160,13 @@ class Client_Control
                     danhsachcomment=chitietsach.danhgia
                     for(var i=0;i<danhsachcomment.length;i++)
                     {
-                    if(danhsachcomment[i].matk===req.query.matk)
-                    {
-                        dadanhgia=true
-                        sosaodanhgia=danhsachcomment[i].sao
-                        break
+                        if(danhsachcomment[i].matk===req.query.matk)
+                        {
+                            dadanhgia=true
+                            sosaodanhgia=danhsachcomment[i].sao
+                            break
+                        }
                     }
-                  }
                 }
 
                 //console.log(danhsachdanhgia)
