@@ -763,7 +763,7 @@ class Client_Control
     // }
     chitiettk(req,res,next)
     {
-        console.log(req.query)
+        console.log(req.query.matk)
         client_login.findOne({'matk': req.query.matk})
         .then(thongtintk =>
 
