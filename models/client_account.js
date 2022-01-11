@@ -16,7 +16,7 @@ const client_account = new Schema({
     hoten: String,
     email: {type: String, default: ""},
     matkhau: String,
-    ngaytao: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()},
+    ngaytao: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + (v.getMonth()+1) + "/" + v.getFullYear()},
     diem: Number,
     tinhtrang: String,
     danhsach_km: [{
@@ -51,9 +51,10 @@ const client_account = new Schema({
       tensach: String,
       giaban: Number,
       hinhanh: String,
-      ngayxem: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + v.getMonth() + "/" + v.getFullYear()},
+      ngayxem: {type: Date, default: Date.now,  transform: v => v.getDate() + "/" + (v.getMonth()+1) + "/" + v.getFullYear()},
     }],
-    sl_giohang: Number,
+    sl_giohang: {type: Number, default: 0},
+    sl_donhang: {type: Number, default: 0},
     diachi: {type: String, default: ""}
   });
   

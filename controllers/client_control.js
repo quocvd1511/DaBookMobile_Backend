@@ -784,7 +784,7 @@ class Client_Control
         //console.log(req.body)
         var ThanhToan = ''
         var TinhTrangThanhToan =''
-        if(req.body.value==='first')
+        if(req.body.thanhtoan==='first')
         {
             ThanhToan = "Trực tiếp"
             TinhTrangThanhToan = "Chưa thanh toán"
@@ -831,7 +831,7 @@ class Client_Control
                     var madh="dh00"+(parseInt(code)+1).toString()
                     var ThanhToan = ''
                     var TinhTrangThanhToan =''
-                    if(req.body.value==='first')
+                    if(req.body.thanhtoan==='first')
                     {
                         ThanhToan = "Trực tiếp"
                         TinhTrangThanhToan = "Chưa thanh toán"
@@ -856,7 +856,7 @@ class Client_Control
                     FormData.save()
                     khuyenmai.find({makm: {$in: req.body.danhsach_km}})
                         .then(khuyenmaiss =>{
-                            client_account.updateOne({'matk': req.body.matk},{danhsach_km: khuyenmaiss})
+                            client_account.updateOne({'matk': req.body.matk},{danhsach_km: khuyenmaiss,$inc: {"sl_donhang": +1}})
                                 .then(res.send({status: 'Success', madh: madh}))
                         })
 
@@ -865,7 +865,7 @@ class Client_Control
                     var madh="dh00"+(1).toString()
                     var ThanhToan = ''
                     var TinhTrangThanhToan =''
-                    if(req.body.value==='first')
+                    if(req.body.thanhtoan==='first')
                     {
                         ThanhToan = "Trực tiếp"
                         TinhTrangThanhToan = "Chưa thanh toán"
@@ -888,7 +888,7 @@ class Client_Control
 
                     FormData = new donhang(FormData)
                     FormData.save()
-                    client_account.updateOne({'matk': req.body.matk},{danhsach_km: req.body.danhsach_km})
+                    client_account.updateOne({'matk': req.body.matk},{danhsach_km: req.body.danhsach_km,$inc: {"sl_donhang": +1}})
                         .then(res.send({status: 'Success', madh: madh}))
                  }
                 
@@ -1033,7 +1033,6 @@ class Client_Control
     //list user---------------------
 
     listdonhang(req,res,next)
-
     {
         console.log(req.params.matk) 
         donhang.find({'matk':req.params.matk, 'tinhtrangdonhang': req.params.tinhtrang})
