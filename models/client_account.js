@@ -23,7 +23,7 @@ const client_account = new Schema({
       phantram: Number,
       manhap: String,
       ngaykt: {type: Date,
-        transform: v => v.getDate() + "/" + (v.getMonth()+1) + "/" + v.getFullYear()
+        transform: v => v.getDate() + "/" + (v.getMonth()+1) + "/" + v.getFullYear() 
       },
       makm: String,
       dieukien: Number,

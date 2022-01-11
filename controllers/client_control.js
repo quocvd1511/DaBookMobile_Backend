@@ -763,7 +763,7 @@ class Client_Control
     // }
     chitiettk(req,res,next)
     {
-        console.log(req.query)
+        console.log(req.query.matk)
         client_login.findOne({'matk': req.query.matk})
         .then(thongtintk =>
 
@@ -780,8 +780,8 @@ class Client_Control
 
     TaoDonHang(req,res,next)
     {
-        //console.log('Hello')
-        //console.log(req.body)
+        console.log('Hello')
+        console.log(req.body)
         var ThanhToan = ''
         var TinhTrangThanhToan =''
         if(req.body.thanhtoan==='first')
@@ -951,7 +951,9 @@ class Client_Control
         .then(() => 
         {
             console.log("Haha")
-            res.send({status: "Sách đã được xóa khỏi giỏ hàng"})
+            const notice = 'Sách đã được xóa khỏi giỏ hàng'
+            console.log(notice)
+            res.send({notice})
         })
         .catch(next)
     }
